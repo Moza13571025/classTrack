@@ -1,10 +1,13 @@
-//設置react router
+//設置首頁、ToDoList、MapPage之路由
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import ToDoList from "./pages/ToDoList";
 import MapPage from "./pages/MapPage";
+//設置登入頁面之路由
+import LoginPage from "./pages/LoginPage";
+import FormPage from "./pages/FormPage";
 
 //預設
 // function App() {
@@ -35,12 +38,16 @@ const App = () => (
     <nav>
       <Link to="/">To-Do List</Link>
       <Link to="/map">Map</Link>
+      <Link to="/login">Login</Link>
+      <Link to="/form">Form</Link>
     </nav>
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/todo" element={<ToDoList />} />
         <Route path="/map" element={<MapPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/form" element={<FormPage />} />
       </Routes>
     </Layout>
   </Router>
