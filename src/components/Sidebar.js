@@ -65,9 +65,10 @@ const Sidebar = () => {
           onClick={handleDrawerToggle}
           sx={{
             position: "fixed",
-            top: 16,
-            left: 16,
+            top: 8,
+            right: 16,
             zIndex: theme.zIndex.drawer + 1,
+            color: "white",
           }}
         >
           <MenuIcon />
@@ -75,6 +76,7 @@ const Sidebar = () => {
       )}
       <Drawer
         variant={isMobile ? "temporary" : "permanent"}
+        anchor="right" //抽屜改從右邊顯示
         open={isMobile ? mobileOpen : true}
         onClose={handleDrawerToggle}
         ModalProps={{
