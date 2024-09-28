@@ -1,10 +1,6 @@
-// 預設
-// import logo from './logo.svg';
-// import './App.css';
-
 //設置react router
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import ToDoList from "./pages/ToDoList";
@@ -36,6 +32,10 @@ import MapPage from "./pages/MapPage";
 
 const App = () => (
   <Router>
+    <nav>
+      <Link to="/">To-Do List</Link>
+      <Link to="/map">Map</Link>
+    </nav>
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
