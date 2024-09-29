@@ -8,7 +8,7 @@ const Header = () => (
   <AppBar position="fixed">
     <Toolbar>
       <Typography variant="h6" noWrap component="div">
-        我的應用程式
+        團課小幫手
       </Typography>
     </Toolbar>
   </AppBar>
