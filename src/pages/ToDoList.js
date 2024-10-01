@@ -29,6 +29,7 @@ function ToDoList() {
   const [date, setDate] = useState(dayjs()); // 新增日期 state
   const [editIndex, setEditIndex] = useState(null);
   const [dateFilter, setDateFilter] = useState(dayjs()); //透過dayjs()初始化dateFilter為當前日期；動態更新dateFilter
+  const [selectedDate, setSelectedDate] = useState(dayjs()); // 用來存儲臨時選擇的日期
   const [openDialog, setOpenDialog] = useState(false); // 控制彈跳視窗開關
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // 控制刪除彈跳視窗
   const [deleteIndex, setDeleteIndex] = useState(null); // 記錄要刪除的待辦事項索引
@@ -54,7 +55,6 @@ function ToDoList() {
       } else {
         // 新增待辦事項
         setTodos([...todos, { task: input, date }]); // 將新待辦事項對象添加到陣列
-
         console.log(todos); //檢查新待辦事項是否正確設置
       }
       setInput("");
@@ -75,6 +75,11 @@ function ToDoList() {
     handleCloseDeleteDialog(); // 刪除確認後關閉彈跳視窗
   };
 
+  // 點擊按鈕時才觸發篩選功能，根據 dateFilter 篩選待辦事項
+  const handleFilterTodos = () => {
+    setDateFilter(selectedDate);
+  };
+
   //篩選日期晚於/等於dateFilter的待辦事項，並儲存在filteredTodos陣列中
   const filteredTodos = todos.filter((todo) =>
     dayjs(todo.date).isSameOrAfter(dateFilter)
@@ -93,11 +98,14 @@ function ToDoList() {
 
         {/* 日期篩選 DateTimePicker */}
         <DateTimePicker
-          label="Filter by Date"
-          value={dateFilter}
-          onChange={(newValue) => setDateFilter(newValue)}
+          label="選擇要篩選的日期"
+          value={selectedDate} // 用 selectedDate 儲存選擇的日期
+          onChange={(newValue) => setSelectedDate(newValue)} // 只更新選擇的日期，不立即篩選
           slots={{ textField: TextField }}
         />
+        <Button variant="contained" onClick={handleFilterTodos}>
+          篩選
+        </Button>
 
         {/* <TextField
           label="New Todo"
@@ -109,6 +117,7 @@ function ToDoList() {
           {editIndex !== null ? "Update" : "Add"}
         </Button> */}
 
+        {/* 篩選後的清單 */}
         <List>
           {filteredTodos.map((todos, index) => (
             <ListItem key={index}>
