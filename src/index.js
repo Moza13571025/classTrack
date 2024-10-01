@@ -21,12 +21,12 @@ root.render(
 reportWebVitals();
 
 //配置MUI主題之2.應用主題
-ReactDOM.render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline /> {/* 重置CSS，確保一致的樣式 */}
-      <App />
-    </ThemeProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <ThemeProvider theme={theme}>
+//       <CssBaseline /> {/* 重置CSS，確保一致的樣式 */}
+//       <App />
+//     </ThemeProvider>
+//   </React.StrictMode>,
+//   document.getElementById("root")
+// );
