@@ -53,7 +53,7 @@ function ToDoList() {
         setEditIndex(null);
       } else {
         // 新增待辦事項
-        setTodos([...todos, { task: input, date  }]); // 將新待辦事項對象添加到陣列
+        setTodos([...todos, { task: input, date }]); // 將新待辦事項對象添加到陣列
 
         console.log(todos); //檢查新待辦事項是否正確設置
       }
@@ -110,13 +110,13 @@ function ToDoList() {
         </Button> */}
 
         <List>
-          {filteredTodos.map((todo, index) => (
+          {filteredTodos.map((todos, index) => (
             <ListItem key={index}>
               <ListItemText
-                primary={todo.task} // 顯示待辦事項（字串）
+                primary={todos.task} // 顯示待辦事項（字串）
                 secondary={
-                  todo.date
-                    ? dayjs(todo.date).format("YYYY-MM-DD HH:mm")
+                  todos.date
+                    ? dayjs(todos.date).format("YYYY-MM-DD")
                     : "No date available"
                 } //顯示日期，設定3元條件式防止 todo.date 為 undefined 時導致的 TypeError 錯誤。
               />
