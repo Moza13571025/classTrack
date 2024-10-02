@@ -107,22 +107,6 @@ function ToDoList() {
           Add Todo
         </Button>
 
-        {/* 使用下拉式選單 */}
-        <FormControl fullWidth>
-          <InputLabel id="task-label">選擇任務</InputLabel>
-          <Select
-            labelId="task-label"
-            value={task}
-            onChange={(e) => setTask(e.target.value)}
-          >
-            {taskOptions.map((option, index) => (
-              <MenuItem key={index} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
         {/* 日期選擇器 DateTimePicker */}
         <DateTimePicker
           label="選擇要篩選的日期"
