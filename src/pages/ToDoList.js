@@ -10,6 +10,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,46 +29,53 @@ dayjs.extend(isSameOrAfter);
 
 function ToDoList() {
   const [todos, setTodos] = useState([]);
-  const [input, setInput] = useState("");
-  const [date, setDate] = useState(dayjs()); // 新增日期 state
+  // const [input, setInput] = useState("");
+  const [task, setTask] = useState(""); // 設定 task 為下拉選單的選擇
+  const [date, setDate] = useState(dayjs());
   const [editIndex, setEditIndex] = useState(null);
   const [dateFilter, setDateFilter] = useState(dayjs()); //透過dayjs()初始化dateFilter為當前日期；動態更新dateFilter
   const [selectedDate, setSelectedDate] = useState(dayjs()); // 用來存儲臨時選擇的日期
   const [openDialog, setOpenDialog] = useState(false); // 控制彈跳視窗開關
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // 控制刪除彈跳視窗
   const [deleteIndex, setDeleteIndex] = useState(null); // 記錄要刪除的待辦事項索引
-
   const handleOpenDialog = () => setOpenDialog(true); // 開啟彈跳視窗
   const handleCloseDialog = () => setOpenDialog(false); // 關閉彈跳視窗
 
   const handleOpenDeleteDialog = (index) => {
+    setTask("");
+    setDate(dayjs());
     setDeleteIndex(index);
     setOpenDeleteDialog(true);
   };
-  const handleCloseDeleteDialog = () => setOpenDeleteDialog(false);
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+    setEditIndex(null);
+  };
+  // 預設任務選項
+  const taskOptions = ["學習", "運動", "購物", "休息"];
 
   const handleAddTodo = () => {
-    if (input.trim()) {
+    if (task.trim()) {
       // const newTodo = { task: input, date };
       if (editIndex !== null) {
         // 編輯待辦事項
         const updatedTodos = [...todos];
-        updatedTodos[editIndex] = { task: input, date }; // 更新對應的待辦事項
+        updatedTodos[editIndex] = { task, date }; // 更新對應的待辦事項
         setTodos(updatedTodos);
         setEditIndex(null);
       } else {
         // 新增待辦事項
-        setTodos([...todos, { task: input, date }]); // 將新待辦事項對象添加到陣列
+        setTodos([...todos, { task, date }]); // 將新待辦事項對象添加到陣列
         console.log(todos); //檢查新待辦事項是否正確設置
       }
-      setInput("");
+      setTask(""); // 重置下拉選單
       setDate(dayjs()); // 重置日期
       handleCloseDialog(); // 新增或編輯後自動關閉彈跳視窗
     }
   };
 
   const handleEditTodo = (index) => {
-    setInput(todos[index].task); // 只設置待辦事項的文本
+    setTask(todos[index].task); // 只設置待辦事項的文本
     setDate(todos[index].date); // 分別設置日期
     setEditIndex(index);
     handleOpenDialog(); // 編輯時打開彈跳視窗
@@ -96,7 +107,23 @@ function ToDoList() {
           Add Todo
         </Button>
 
-        {/* 日期篩選 DateTimePicker */}
+        {/* 使用下拉式選單 */}
+        <FormControl fullWidth>
+          <InputLabel id="task-label">選擇任務</InputLabel>
+          <Select
+            labelId="task-label"
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+          >
+            {taskOptions.map((option, index) => (
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* 日期選擇器 DateTimePicker */}
         <DateTimePicker
           label="選擇要篩選的日期"
           value={selectedDate} // 用 selectedDate 儲存選擇的日期
@@ -142,16 +169,26 @@ function ToDoList() {
         {/* 彈跳視窗 (Dialog) */}
         <Dialog open={openDialog} onClose={handleCloseDialog}>
           <DialogTitle>
-            {editIndex !== null ? "Edit Todo" : "New Todo"}
+            {editIndex !== null ? "編輯待辦事項" : "新增待辦事項"}
           </DialogTitle>
           <DialogContent>
-            <TextField
-              label="Task"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              fullWidth
-              variant="outlined"
-            />
+            {/* 使用下拉選單選擇任務 */}
+            <FormControl fullWidth>
+              <InputLabel id="task-label">選擇任務</InputLabel>
+              <Select
+                labelId="task-label"
+                value={task}
+                onChange={(e) => setTask(e.target.value)}
+                fullWidth
+              >
+                {taskOptions.map((option, index) => (
+                  <MenuItem key={index} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <DateTimePicker
               label="Due Date"
               value={date}
