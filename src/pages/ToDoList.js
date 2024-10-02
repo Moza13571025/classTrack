@@ -14,6 +14,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Autocomplete,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -156,22 +157,26 @@ function ToDoList() {
             {editIndex !== null ? "編輯待辦事項" : "新增待辦事項"}
           </DialogTitle>
           <DialogContent>
-            {/* 使用下拉選單選擇任務 */}
-            <FormControl fullWidth>
-              <InputLabel id="task-label">選擇任務</InputLabel>
-              <Select
-                labelId="task-label"
-                value={task}
-                onChange={(e) => setTask(e.target.value)}
-                fullWidth
-              >
-                {taskOptions.map((option, index) => (
-                  <MenuItem key={index} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {/* 使用 Autocomplete 來支持下拉選單與自定義輸入 */}
+            <Autocomplete
+              freeSolo // 支持用戶自行輸入
+              options={taskOptions} // 預設選項
+              value={task}
+              onChange={(event, newValue) => {
+                setTask(newValue);
+              }}
+              onInputChange={(event, newInputValue) => {
+                setTask(newInputValue); // 更新用戶輸入值
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Task"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+            />
 
             <DateTimePicker
               label="Due Date"
