@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import MapIcon from "@mui/icons-material/Map";
+import { Link } from "react-router-dom"; // 導入 Link 組件
 //導入DateTimePicker
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -33,6 +35,7 @@ function ToDoList() {
   // const [input, setInput] = useState("");
   const [task, setTask] = useState(""); // 設定 task 為下拉選單的選擇
   const [date, setDate] = useState(dayjs());
+  const [location, setLocation] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [dateFilter, setDateFilter] = useState(dayjs()); //透過dayjs()初始化dateFilter為當前日期；動態更新dateFilter
   const [selectedDate, setSelectedDate] = useState(dayjs()); // 用來存儲臨時選擇的日期
@@ -61,16 +64,17 @@ function ToDoList() {
       if (editIndex !== null) {
         // 編輯待辦事項
         const updatedTodos = [...todos];
-        updatedTodos[editIndex] = { task, date }; // 更新對應的待辦事項
+        updatedTodos[editIndex] = { task, date, location }; // 更新對應的待辦事項
         setTodos(updatedTodos);
         setEditIndex(null);
       } else {
         // 新增待辦事項
-        setTodos([...todos, { task, date }]); // 將新待辦事項對象添加到陣列
+        setTodos([...todos, { task, date, location }]); // 將新待辦事項對象添加到陣列
         console.log(todos); //檢查新待辦事項是否正確設置
       }
       setTask(""); // 重置下拉選單
       setDate(dayjs()); // 重置日期
+      setLocation(""); // 清空地點
       handleCloseDialog(); // 新增或編輯後自動關閉彈跳視窗
     }
   };
@@ -78,6 +82,7 @@ function ToDoList() {
   const handleEditTodo = (index) => {
     setTask(todos[index].task); // 只設置待辦事項的文本
     setDate(todos[index].date); // 分別設置日期
+    setLocation(todos[index].location);
     setEditIndex(index);
     handleOpenDialog(); // 編輯時打開彈跳視窗
   };
@@ -135,11 +140,14 @@ function ToDoList() {
             <ListItem key={index}>
               <ListItemText
                 primary={todos.task} // 顯示待辦事項（字串）
-                secondary={
-                  todos.date
-                    ? dayjs(todos.date).format("YYYY-MM-DD")
-                    : "No date available"
-                } //顯示日期，設定3元條件式防止 todo.date 為 undefined 時導致的 TypeError 錯誤。
+                secondary={`Due:
+                  ${
+                    todos.date
+                      ? dayjs(todos.date).format("YYYY-MM-DD")
+                      : "No date available"
+                  },
+                    Location: ${todos.location}
+                `} //顯示日期，設定3元條件式防止 todo.date 為 undefined 時導致的 TypeError 錯誤。
               />
               <IconButton onClick={() => handleEditTodo(index)}>
                 <EditIcon />
@@ -147,6 +155,13 @@ function ToDoList() {
               <IconButton onClick={() => handleDeleteTodo(index)}>
                 <DeleteIcon />
               </IconButton>
+
+              {/* 地圖圖示按鈕 */}
+              <Link to={`/map/${todos.location}`}>
+                <IconButton>
+                  <MapIcon />
+                </IconButton>
+              </Link>
             </ListItem>
           ))}
         </List>
@@ -176,6 +191,15 @@ function ToDoList() {
                   fullWidth
                 />
               )}
+            />
+
+            {/* 新增地點輸入欄位 */}
+            <TextField
+              label="Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)} // 設置地點
+              variant="outlined"
+              fullWidth
             />
 
             <DateTimePicker
