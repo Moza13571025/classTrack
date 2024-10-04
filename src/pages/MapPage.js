@@ -23,7 +23,20 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapPage = () => {
-  const [markers, setMarkers] = useState([]); // 儲存標記
+  const [markers, setMarkers] = useState([
+    {
+      position: [22.996971351128252, 120.21404817885606],
+      address: "世界健身俱樂部台南Focus店",
+    },
+    {
+      position: [23.008515760635625, 120.21164015984951],
+      address: "世界健身俱樂部台南西門店",
+    },
+    {
+      position: [23.017525035441636, 120.22907661465433], // 健身房3的位置
+      address: "世界健身俱樂部台南永康店",
+    },
+  ]); // 預設多個健身房標記
   const [address, setAddress] = useState(""); // 儲存用戶輸入的地址
   const [errorMessage, setErrorMessage] = useState(null);
   // const { location } = useParams(); // 獲取URL中的地點參數;
@@ -99,7 +112,7 @@ const MapPage = () => {
 
       {/* 地圖容器 */}
       <MapContainer
-        center={[51.505, -0.09]}
+        center={[22.9999, 120.227]}//台南市中心
         zoom={13}
         style={{ height: "100vh", width: "100%" }}
       >
