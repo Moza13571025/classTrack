@@ -14,12 +14,25 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import axios from "axios";
 
-// 設定默認標記圖示
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+// 設定默認標記圖示 (預設健身房標記)
+const gymIcon = new L.Icon({
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+  iconSize: [25, 41], // 圖示大小
+  iconAnchor: [12, 41], // 圖示的錨點
+  popupAnchor: [1, -34], // 彈出視窗的錨點
+  shadowSize: [41, 41], // 陰影大小
+});
+
+// 自定義使用者新增標記圖示 (不同樣式)
+const customUserIcon = new L.Icon({
+  iconUrl: require("leaflet/dist/images/marker-icon-2x.png"), // 使用不同顏色的圖示
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+  className: "my-green-marker",
 });
 
 const MapPage = () => {
@@ -27,14 +40,17 @@ const MapPage = () => {
     {
       position: [22.996971351128252, 120.21404817885606],
       address: "世界健身俱樂部台南Focus店",
+      type: "gym", //標記類型
     },
     {
       position: [23.008515760635625, 120.21164015984951],
       address: "世界健身俱樂部台南西門店",
+      type: "gym", //標記類型
     },
     {
       position: [23.017525035441636, 120.22907661465433], // 健身房3的位置
       address: "世界健身俱樂部台南永康店",
+      type: "gym", //標記類型
     },
   ]); // 預設多個健身房標記
   const [address, setAddress] = useState(""); // 儲存用戶輸入的地址
@@ -112,7 +128,7 @@ const MapPage = () => {
 
       {/* 地圖容器 */}
       <MapContainer
-        center={[22.9999, 120.227]}//台南市中心
+        center={[22.9999, 120.227]} //台南市中心
         zoom={13}
         style={{ height: "100vh", width: "100%" }}
       >
@@ -121,9 +137,13 @@ const MapPage = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        {/* 將標記渲染到地圖上 */}
+        {/* 將標記渲染到地圖上，根據標記類型使用不同的圖示 */}
         {markers.map((marker, index) => (
-          <Marker key={index} position={marker.position}>
+          <Marker
+            key={index}
+            position={marker.position}
+            icon={marker.type === "gym" ? gymIcon : customUserIcon} // 根據類型設置圖標
+          >
             <Popup>{marker.address}</Popup>
           </Marker>
         ))}
