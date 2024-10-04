@@ -25,6 +25,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import axios from "axios";
 
 // 引入 isSameOrAfter 插件；因為dayjs 目前不支援 isSameOrAfter 函數
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -44,6 +45,10 @@ function ToDoList() {
   const [deleteIndex, setDeleteIndex] = useState(null); // 記錄要刪除的待辦事項索引
   const handleOpenDialog = () => setOpenDialog(true); // 開啟彈跳視窗
   const handleCloseDialog = () => setOpenDialog(false); // 關閉彈跳視窗
+
+  const [markers, setMarkers] = useState([]); // 儲存標記
+  const [address, setAddress] = useState(""); // 儲存用戶輸入的地址
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleOpenDeleteDialog = (index) => {
     setTask("");
@@ -76,6 +81,37 @@ function ToDoList() {
       setDate(dayjs()); // 重置日期
       setLocation(""); // 清空地點
       handleCloseDialog(); // 新增或編輯後自動關閉彈跳視窗
+    }
+  };
+
+  // 處理用戶提交地址
+  const handleGeocode = async () => {
+    try {
+      const response = await axios.get(
+        "https://nominatim.openstreetmap.org/search",
+        {
+          params: {
+            q: address, // 用戶輸入的地址
+            format: "json", // 返回 JSON 格式的數據
+          },
+        }
+      );
+
+      // 確保有返回數據
+      if (response.data.length > 0) {
+        const { lat, lon } = response.data[0]; // 提取第一個匹配的地址結果
+        const newMarker = {
+          position: [parseFloat(lat), parseFloat(lon)],
+          address,
+        };
+        setMarkers((prevMarkers) => [...prevMarkers, newMarker]); // 添加新標記
+        setErrorMessage(null); // 清除錯誤信息
+      } else {
+        setErrorMessage("地址未找到，請再試一次。");
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("無法獲取地理位置。");
     }
   };
 
@@ -194,13 +230,25 @@ function ToDoList() {
             />
 
             {/* 新增地點輸入欄位 */}
-            <TextField
+            {/* <TextField
               label="Location"
               value={location}
               onChange={(e) => setLocation(e.target.value)} // 設置地點
               variant="outlined"
               fullWidth
+            /> */}
+
+            {/* 地址輸入框 */}
+            <TextField
+              label="Enter Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              fullWidth
+              variant="outlined"
             />
+            <Button variant="contained" onClick={handleGeocode}>
+              Add Marker
+            </Button>
 
             <DateTimePicker
               label="Due Date"
