@@ -1,5 +1,6 @@
 // src/pages/MapPage.js
 import React, { useState } from "react";
+import { useParams } from "react-router-dom"; // 用來獲取 URL 中的參數
 import { Typography } from "@mui/material";
 //引入Leaflet dependency
 import {
@@ -21,29 +22,34 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapPage = () => {
+  const { location } = useParams(); // 獲取URL中的地點參數;
+  const position = location.split(",").map(Number); // 解析成經緯度數組
+
+  console.log({location});
+
   // 標記的位置
-  const initialPosition = [51.505, -0.09]; // 例如倫敦的座標
-  const [markers, setMarkers] = useState([]);
+  // const initialPosition = [51.505, -0.09]; // 例如倫敦的座標
+  // const [markers, setMarkers] = useState([]);
 
   // 自定義地圖點擊事件
-  const MapClickHandler = () => {
-    useMapEvents({
-      click(e) {
+  // const MapClickHandler = () => {
+  //   useMapEvents({
+  //     click(e) {
         // 每次點擊地圖時，根據點擊的經緯度，新增一個標記
-        const newMarker = [e.latlng.lat, e.latlng.lng];
-        setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
-      },
-    });
-    return null;
-  };
+  //       const newMarker = [e.latlng.lat, e.latlng.lng];
+  //       setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
+  //     },
+  //   });
+  //   return null;
+  // };
 
   return (
     <>
-      <Typography variant="h4" align="center" gutterBottom>
+      {/* <Typography variant="h4" align="center" gutterBottom>
         點擊地圖以添加標記
-      </Typography>
+      </Typography> */}
       <MapContainer
-        center={initialPosition}
+        center={position}
         zoom={13}
         style={{ height: "80vh", width: "100%" }}
       >
@@ -52,17 +58,24 @@ const MapPage = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
+        <Marker position={position}>
+          <Popup>
+            Selected Location: {position[0].toFixed(5)},{" "}
+            {position[1].toFixed(5)}
+          </Popup>
+        </Marker>
+
         {/* 自定義的地圖點擊事件處理 */}
-        <MapClickHandler />
+        {/* <MapClickHandler /> */}
 
         {/* 渲染已添加的標記 */}
-        {markers.map((position, index) => (
+        {/* {markers.map((position, index) => (
           <Marker key={index} position={position}>
             <Popup>
               標記於: {position[0].toFixed(5)}, {position[1].toFixed(5)}
             </Popup>
           </Marker>
-        ))}
+        ))} */}
       </MapContainer>
     </>
   );

@@ -46,6 +46,7 @@ const App = () => (
         <Route path="/" element={<Home />} />
         <Route path="/todo" element={<ToDoList />} />
         <Route path="/map" element={<MapPage />} />
+        <Route path="/map/:location" element={<MapPage />} /> {/* 路由設置 */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/form" element={<FormPage />} />
       </Routes>
