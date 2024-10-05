@@ -1,5 +1,5 @@
 // src/pages/MapPage.js
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom"; // 用來獲取 URL 中的參數
 import { Typography, TextField, Button } from "@mui/material";
 //引入Leaflet dependency
@@ -8,7 +8,7 @@ import {
   TileLayer,
   Marker,
   Popup,
-  useMapEvents,
+  useMap,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -35,6 +35,18 @@ const customUserIcon = new L.Icon({
   className: "my-green-marker",
 });
 
+// 用來動態改變地圖中心的元件
+const SetMapCenter = ({ position }) => {
+  const map = useMap(); // 獲取地圖實例
+  useEffect(() => {
+    if (position) {
+      map.setView(position, 13); // 當獲取到用戶位置時，將地圖中心設置為該位置
+    }
+  }, [position, map]);
+
+  return null;
+};
+
 const MapPage = () => {
   const [markers, setMarkers] = useState([
     {
@@ -55,8 +67,33 @@ const MapPage = () => {
   ]); // 預設多個健身房標記
   const [address, setAddress] = useState(""); // 儲存用戶輸入的地址
   const [errorMessage, setErrorMessage] = useState(null);
+  const [userLocation, setUserLocation] = useState(null); // 儲存用戶位置
+  const [loadingLocation, setLoadingLocation] = useState(true); // 控制地圖加載
   // const { location } = useParams(); // 獲取URL中的地點參數;
   // const position = location.split(",").map(Number); // 解析成經緯度數組
+
+  // 獲取用戶當前位置
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation([
+            position.coords.latitude,
+            position.coords.longitude,
+          ]);
+          setLoadingLocation(false); // 設置加載完成
+        },
+        (error) => {
+          console.error("Error fetching user's location: ", error);
+          setErrorMessage("無法獲取您的位置，請檢查瀏覽器的定位權限設定。");
+          setLoadingLocation(false); // 即使發生錯誤也設置加載完成
+        }
+      );
+    } else {
+      setErrorMessage("瀏覽器不支援定位功能。");
+      setLoadingLocation(false); // 如果不支援，停止加載
+    }
+  }, []);
 
   // 處理用戶提交地址
   const handleGeocode = async () => {
@@ -105,6 +142,10 @@ const MapPage = () => {
   //   return null;
   // };
 
+  if (loadingLocation) {
+    return <Typography>正在獲取您的位置...</Typography>;
+  }
+
   return (
     <>
       {/* <Typography variant="h4" align="center" gutterBottom>
@@ -128,7 +169,7 @@ const MapPage = () => {
 
       {/* 地圖容器 */}
       <MapContainer
-        center={[22.9999, 120.227]} //台南市中心
+        center={userLocation || [22.9999, 120.227]} //預設中心為台南，或顯示用戶當前位置
         zoom={13}
         style={{ height: "100vh", width: "100%" }}
       >
@@ -136,6 +177,16 @@ const MapPage = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+
+        {/* 設置地圖中心為用戶的位置 */}
+        {userLocation && <SetMapCenter position={userLocation} />}
+
+        {/* 如果用戶位置可用，顯示當前位置的標記 */}
+        {userLocation && (
+          <Marker position={userLocation}>
+            <Popup>您的位置</Popup>
+          </Marker>
+        )}
 
         {/* 將標記渲染到地圖上，根據標記類型使用不同的圖示 */}
         {markers.map((marker, index) => (
