@@ -1,7 +1,6 @@
 // src/pages/MapPage.js
-import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom"; // 用來獲取 URL 中的參數
-import { Typography, TextField, Button } from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import { Typography } from "@mui/material";
 //引入Leaflet dependency
 import {
   MapContainer,
@@ -12,7 +11,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import axios from "axios";
+import { MarkerContext } from "../context/MarkerContext"; // 導入Context
 
 // 設定默認標記圖示 (預設健身房標記)
 const gymIcon = new L.Icon({
@@ -48,29 +47,10 @@ const SetMapCenter = ({ position }) => {
 };
 
 const MapPage = () => {
-  const [markers, setMarkers] = useState([
-    {
-      position: [22.996971351128252, 120.21404817885606],
-      address: "世界健身俱樂部台南Focus店",
-      type: "gym", //標記類型
-    },
-    {
-      position: [23.008515760635625, 120.21164015984951],
-      address: "世界健身俱樂部台南西門店",
-      type: "gym", //標記類型
-    },
-    {
-      position: [23.017525035441636, 120.22907661465433], // 健身房3的位置
-      address: "世界健身俱樂部台南永康店",
-      type: "gym", //標記類型
-    },
-  ]); // 預設多個健身房標記
-  const [address, setAddress] = useState(""); // 儲存用戶輸入的地址
+  const { markers } = useContext(MarkerContext); // 使用MarkerContext來獲取標記
   const [errorMessage, setErrorMessage] = useState(null);
   const [userLocation, setUserLocation] = useState(null); // 儲存用戶位置
   const [loadingLocation, setLoadingLocation] = useState(true); // 控制地圖加載
-  // const { location } = useParams(); // 獲取URL中的地點參數;
-  // const position = location.split(",").map(Number); // 解析成經緯度數組
 
   // 獲取用戶當前位置
   useEffect(() => {
@@ -91,56 +71,45 @@ const MapPage = () => {
       );
     } else {
       setErrorMessage("瀏覽器不支援定位功能。");
-      setLoadingLocation(false); // 如果不支援，停止加載
     }
   }, []);
 
-  // 處理用戶提交地址
-  const handleGeocode = async () => {
-    try {
-      const response = await axios.get(
-        "https://nominatim.openstreetmap.org/search",
-        {
-          params: {
-            q: address, // 用戶輸入的地址
-            format: "json", // 返回 JSON 格式的數據
-          },
-        }
-      );
+  // 自動處理用戶提交地址
+  // useEffect(() => {
+  //   const geocodeAddress = async (address) => {
+  //     if (!address) return; // 如果地址為空，則不處理
 
-      // 確保有返回數據
-      if (response.data.length > 0) {
-        const { lat, lon } = response.data[0]; // 提取第一個匹配的地址結果
-        const newMarker = {
-          position: [parseFloat(lat), parseFloat(lon)],
-          address,
-        };
-        setMarkers((prevMarkers) => [...prevMarkers, newMarker]); // 添加新標記
-        setErrorMessage(null); // 清除錯誤信息
-      } else {
-        setErrorMessage("地址未找到，請再試一次。");
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("無法獲取地理位置。");
-    }
-  };
+  //     try {
+  //       const response = await axios.get(
+  //         "https://nominatim.openstreetmap.org/search",
+  //         {
+  //           params: {
+  //             q: address,
+  //             format: "json",
+  //           },
+  //         }
+  //       );
 
-  // 標記的位置
-  // const initialPosition = [51.505, -0.09]; // 例如倫敦的座標
-  // const [markers, setMarkers] = useState([]);
-
-  // 自定義地圖點擊事件
-  // const MapClickHandler = () => {
-  //   useMapEvents({
-  //     click(e) {
-  // 每次點擊地圖時，根據點擊的經緯度，新增一個標記
-  //       const newMarker = [e.latlng.lat, e.latlng.lng];
-  //       setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
-  //     },
-  //   });
-  //   return null;
-  // };
+  //       // 確保有返回數據
+  //       if (response.data.length > 0) {
+  //         const { lat, lon } = response.data[0]; // 提取第一個匹配的地址結果
+  //         const newMarker = {
+  //           position: [parseFloat(lat), parseFloat(lon)],
+  //           address,
+  //           type: "custom", // 使用者新增的標記類型
+  //         };
+  //         setMarkers((prevMarkers) => [...prevMarkers, newMarker]); // 添加新標記
+  //         setErrorMessage(null); // 清除錯誤信息
+  //       } else {
+  //         setErrorMessage("地址未找到，請再試一次。");
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //       setErrorMessage("無法獲取地理位置。");
+  //     }
+  //   };
+  //   geocodeAddress(address); // 觸發地理編碼
+  // }, [address]); // 當 address 變化時觸發
 
   if (loadingLocation) {
     return <Typography>正在獲取您的位置...</Typography>;
@@ -148,22 +117,6 @@ const MapPage = () => {
 
   return (
     <>
-      {/* <Typography variant="h4" align="center" gutterBottom>
-        點擊地圖以添加標記
-      </Typography> */}
-
-      {/* 地址輸入框 */}
-      <TextField
-        label="Enter Address"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        fullWidth
-        variant="outlined"
-      />
-      <Button variant="contained" onClick={handleGeocode}>
-        Add Marker
-      </Button>
-
       {/* 顯示錯誤信息 */}
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
@@ -180,7 +133,6 @@ const MapPage = () => {
 
         {/* 設置地圖中心為用戶的位置 */}
         {userLocation && <SetMapCenter position={userLocation} />}
-
         {/* 如果用戶位置可用，顯示當前位置的標記 */}
         {userLocation && (
           <Marker position={userLocation}>

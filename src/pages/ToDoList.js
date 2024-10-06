@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   TextField,
   Button,
@@ -26,6 +26,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import axios from "axios";
+import { MarkerContext } from "../context/MarkerContext";
 
 // 引入 isSameOrAfter 插件；因為dayjs 目前不支援 isSameOrAfter 函數
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -33,10 +34,8 @@ dayjs.extend(isSameOrAfter);
 
 function ToDoList() {
   const [todos, setTodos] = useState([]);
-  // const [input, setInput] = useState("");
   const [task, setTask] = useState(""); // 設定 task 為下拉選單的選擇
   const [date, setDate] = useState(dayjs());
-  const [location, setLocation] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [dateFilter, setDateFilter] = useState(dayjs()); //透過dayjs()初始化dateFilter為當前日期；動態更新dateFilter
   const [selectedDate, setSelectedDate] = useState(dayjs()); // 用來存儲臨時選擇的日期
@@ -45,8 +44,7 @@ function ToDoList() {
   const [deleteIndex, setDeleteIndex] = useState(null); // 記錄要刪除的待辦事項索引
   const handleOpenDialog = () => setOpenDialog(true); // 開啟彈跳視窗
   const handleCloseDialog = () => setOpenDialog(false); // 關閉彈跳視窗
-
-  const [markers, setMarkers] = useState([]); // 儲存標記
+  const { addMarker } = useContext(MarkerContext); // 使用 addMarker 函數
   const [address, setAddress] = useState(""); // 儲存用戶輸入的地址
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -63,62 +61,58 @@ function ToDoList() {
   // 預設任務選項
   const taskOptions = ["學習", "運動", "購物", "休息"];
 
-  const handleAddTodo = () => {
+  const handleAddTodo = async () => {
     if (task.trim()) {
-      // const newTodo = { task: input, date };
       if (editIndex !== null) {
         // 編輯待辦事項
         const updatedTodos = [...todos];
-        updatedTodos[editIndex] = { task, date, location }; // 更新對應的待辦事項
+        updatedTodos[editIndex] = { task, date, address }; // 更新對應的待辦事項
         setTodos(updatedTodos);
         setEditIndex(null);
       } else {
         // 新增待辦事項
-        setTodos([...todos, { task, date, location }]); // 將新待辦事項對象添加到陣列
+        setTodos([...todos, { task, date, address }]); // 將新待辦事項對象添加到陣列
         console.log(todos); //檢查新待辦事項是否正確設置
+
+        // 將地址轉換為經緯度並新增標記
+        try {
+          const response = await axios.get(
+            "https://nominatim.openstreetmap.org/search",
+            {
+              params: {
+                q: address,
+                format: "json",
+              },
+            }
+          );
+
+          if (response.data.length > 0) {
+            const { lat, lon } = response.data[0];
+            const newMarker = {
+              position: [parseFloat(lat), parseFloat(lon)],
+              address,
+            };
+            addMarker(newMarker); // 使用context中的 addMarker 函數;
+            setErrorMessage(null); // 清除錯誤信息
+          } else {
+            setErrorMessage("地址未找到，請再試一次。");
+          }
+        } catch (error) {
+          console.error(error);
+          setErrorMessage("無法獲取地理位置。");
+        }
       }
       setTask(""); // 重置下拉選單
       setDate(dayjs()); // 重置日期
-      setLocation(""); // 清空地點
+      setAddress(""); // 清除地址輸入欄
       handleCloseDialog(); // 新增或編輯後自動關閉彈跳視窗
-    }
-  };
-
-  // 處理用戶提交地址
-  const handleGeocode = async () => {
-    try {
-      const response = await axios.get(
-        "https://nominatim.openstreetmap.org/search",
-        {
-          params: {
-            q: address, // 用戶輸入的地址
-            format: "json", // 返回 JSON 格式的數據
-          },
-        }
-      );
-
-      // 確保有返回數據
-      if (response.data.length > 0) {
-        const { lat, lon } = response.data[0]; // 提取第一個匹配的地址結果
-        const newMarker = {
-          position: [parseFloat(lat), parseFloat(lon)],
-          address,
-        };
-        setMarkers((prevMarkers) => [...prevMarkers, newMarker]); // 添加新標記
-        setErrorMessage(null); // 清除錯誤信息
-      } else {
-        setErrorMessage("地址未找到，請再試一次。");
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("無法獲取地理位置。");
     }
   };
 
   const handleEditTodo = (index) => {
     setTask(todos[index].task); // 只設置待辦事項的文本
     setDate(todos[index].date); // 分別設置日期
-    setLocation(todos[index].location);
+    setAddress(todos[index].address);
     setEditIndex(index);
     handleOpenDialog(); // 編輯時打開彈跳視窗
   };
@@ -182,7 +176,7 @@ function ToDoList() {
                       ? dayjs(todos.date).format("YYYY-MM-DD")
                       : "No date available"
                   },
-                    Location: ${todos.location}
+                    address: ${todos.address}
                 `} //顯示日期，設定3元條件式防止 todo.date 為 undefined 時導致的 TypeError 錯誤。
               />
               <IconButton onClick={() => handleEditTodo(index)}>
@@ -193,7 +187,7 @@ function ToDoList() {
               </IconButton>
 
               {/* 地圖圖示按鈕 */}
-              <Link to={`/map/${todos.location}`}>
+              <Link to={`/map`}>
                 <IconButton>
                   <MapIcon />
                 </IconButton>
@@ -246,9 +240,6 @@ function ToDoList() {
               fullWidth
               variant="outlined"
             />
-            <Button variant="contained" onClick={handleGeocode}>
-              Add Marker
-            </Button>
 
             <DateTimePicker
               label="Due Date"
