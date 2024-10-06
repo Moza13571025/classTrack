@@ -1,33 +1,41 @@
 // src/pages/Home.js
-import React from "react";
+import React, { useContext } from "react";
 import { Typography, Button } from "@mui/material";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"; // 導入 AuthContext
 
-const Home = () => (
-  <div>
-    <Typography variant="h4">首頁</Typography>
-    <Typography>歡迎來到首頁！</Typography>
+const Home = () => {
+  const { isLoggedIn, logout } = useContext(AuthContext);
 
-    {/* 新增登入和註冊按鈕 */}
-    <Button
-      variant="contained"
-      color="primary"
-      component={Link}
-      to="/login"
-      style={{ margin: "10px" }} // 調整按鈕之間的間距
-    >
-      登入
-    </Button>
-    <Button
-      variant="outlined"
-      color="secondary"
-      component={Link}
-      to="/form"
-      style={{ margin: "10px" }}
-    >
-      註冊
-    </Button>
-  </div>
-);
+  return (
+    <div>
+      <Typography variant="h4">首頁</Typography>
+      <Typography>歡迎來到首頁！</Typography>
+
+      <Button
+        variant="contained"
+        color="primary"
+        component={Link}
+        to="/todo"
+      >
+        ToDoList
+      </Button>
+
+      <Button variant="contained" color="primary" component={Link} to="/map">
+        地圖
+      </Button>
+
+      {isLoggedIn ? (
+        <Button variant="contained" color="secondary" onClick={logout}>
+          登出
+        </Button>
+      ) : (
+        <Button variant="contained" component={Link} to="/login">
+          登入
+        </Button>
+      )}
+    </div>
+  );
+};
 
 export default Home;
