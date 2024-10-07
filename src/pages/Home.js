@@ -19,14 +19,25 @@ const Home = () => {
       <Typography variant="h4">首頁</Typography>
       <Typography>歡迎來到首頁！</Typography>
 
-      <Button variant="contained" color="primary" component={Link} to="/todo">
-        ToDoList
+      {/* 新增登入和註冊按鈕 */}
+      <Button
+        variant="contained"
+        color="primary"
+        component={Link}
+        to="/login"
+        style={{ margin: "10px" }}
+      >
+        登入
       </Button>
-
-      <Button variant="contained" color="primary" component={Link} to="/map">
-        地圖
+      <Button
+        variant="outlined"
+        color="secondary"
+        component={Link}
+        to="/register"
+        style={{ margin: "10px" }}
+      >
+        註冊
       </Button>
-
       <Button variant="contained" onClick={handleAdminLogin}>
         管理者一鍵登入
       </Button>
