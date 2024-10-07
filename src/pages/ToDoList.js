@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -27,14 +27,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import axios from "axios";
 import { MarkerContext } from "../context/MarkerContext";
-import CustomDateTimePicker from "../components/CustomDateTimePicker"; 
+import CustomDateTimePicker from "../components/CustomDateTimePicker";
 
 // 引入 isSameOrAfter 插件；因為dayjs 目前不支援 isSameOrAfter 函數
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 dayjs.extend(isSameOrAfter);
 
 function ToDoList() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(() => {
+    // 從 Local Storage 讀取 todos，若無則返回空陣列
+    const storedTodos = localStorage.getItem("todos");
+    return storedTodos ? JSON.parse(storedTodos) : [];
+  });
   const [task, setTask] = useState(""); // 設定 task 為下拉選單的選擇
   const [date, setDate] = useState(dayjs());
   const [editIndex, setEditIndex] = useState(null);
@@ -50,6 +54,20 @@ function ToDoList() {
   const { markers, getMarkerAddresses } = useContext(MarkerContext);
   const markerLocations = getMarkerAddresses(); //獲取標記地址
   const [errorMessage, setErrorMessage] = useState(null);
+
+// useEffect(() => {
+//   const storedTodos = localStorage.getItem("todos");
+//    console.log("載入的 todos:", storedTodos);
+//   if (storedTodos) {
+//     setTodos(JSON.parse(storedTodos));
+//   }
+// }, []);
+
+// 當 todos 更新時，將其存儲到 Local Storage
+// useEffect(() => {
+//   console.log("todos 狀態變化:", todos);
+//   localStorage.setItem("todos", JSON.stringify(todos));
+// }, [todos]);
 
   const handleOpenDeleteDialog = (index) => {
     setTask("");
@@ -72,16 +90,19 @@ function ToDoList() {
 
   const handleAddTodo = async () => {
     if (task.trim()) {
+      const newTodo = { task, date, address }; // 將新待辦事項設置為對象
+
       if (editIndex !== null) {
         // 編輯待辦事項
         const updatedTodos = [...todos];
-        updatedTodos[editIndex] = { task, date, address }; // 更新對應的待辦事項
+        updatedTodos[editIndex] = newTodo; // 更新對應的待辦事項
         setTodos(updatedTodos);
+        localStorage.setItem("todos", JSON.stringify(updatedTodos)); // 更新 Local Storage
         setEditIndex(null);
       } else {
         // 新增待辦事項
-        setTodos([...todos, { task, date, address }]); // 將新待辦事項對象添加到陣列
-        console.log(todos); //檢查新待辦事項是否正確設置
+        setTodos([...todos, newTodo]); // 將新待辦事項對象添加到陣列
+        localStorage.setItem("todos", JSON.stringify([...todos, newTodo])); // 儲存到 Local Storage
 
         // 將地址轉換為經緯度並新增標記
         try {
@@ -127,8 +148,10 @@ function ToDoList() {
   };
 
   const handleDeleteTodo = (index) => {
-    setTodos(todos.filter((_, i) => i !== index));
-    handleCloseDeleteDialog(); // 刪除確認後關閉彈跳視窗
+    const updatedTodos = todos.filter((_, i) => i !== index);
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos)); // 更新 Local Storage
+    handleCloseDeleteDialog();
   };
 
   // 點擊按鈕時才觸發篩選功能，根據 dateFilter 篩選待辦事項
@@ -137,8 +160,8 @@ function ToDoList() {
   };
 
   //篩選日期晚於/等於dateFilter的待辦事項，並儲存在filteredTodos陣列中
-  const filteredTodos = todos.filter((todo) =>
-    dayjs(todo.date).isSameOrAfter(dateFilter)
+  const filteredTodos = todos.filter((todos) =>
+    dayjs(todos.date).isSameOrAfter(dateFilter)
   );
 
   // 在渲染之前打印 filteredTodos
