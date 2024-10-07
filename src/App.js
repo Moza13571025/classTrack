@@ -5,9 +5,8 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import ToDoList from "./pages/ToDoList";
 import MapPage from "./pages/MapPage";
-// 設置登入頁面之路由
 import LoginPage from "./pages/LoginPage";
-import FormPage from "./pages/FormPage";
+import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -18,8 +17,8 @@ const App = () => (
         <Link to="/">Home</Link>
         <Link to="/todo">To-Do List</Link>
         <Link to="/map">Map</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/form">Form</Link>
+        <Link to="/login">login</Link>
+        <Link to="/register">register</Link>
       </nav>
       <Layout>
         <Routes>
@@ -43,9 +42,9 @@ const App = () => (
             }
           />
 
-          {/* 登入與表單頁面不需要保護 */}
+          {/* 登入與註冊頁面不需要保護 */}
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/form" element={<FormPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </Layout>
     </Router>
