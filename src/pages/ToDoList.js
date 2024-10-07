@@ -46,6 +46,8 @@ function ToDoList() {
   const handleCloseDialog = () => setOpenDialog(false); // 關閉彈跳視窗
   const { addMarker } = useContext(MarkerContext); // 使用 addMarker 函數
   const [address, setAddress] = useState(""); // 儲存用戶輸入的地址
+  const { markers, getMarkerAddresses } = useContext(MarkerContext);
+  const markerLocations = getMarkerAddresses(); //獲取標記地址
   const [errorMessage, setErrorMessage] = useState(null);
 
   const handleOpenDeleteDialog = (index) => {
@@ -59,7 +61,13 @@ function ToDoList() {
     setEditIndex(null);
   };
   // 預設任務選項
-  const taskOptions = ["飛輪有氧", "拳擊有氧", "空中瑜珈", "皮拉提斯","間歇訓練"];
+  const taskOptions = [
+    "飛輪有氧",
+    "拳擊有氧",
+    "空中瑜珈",
+    "皮拉提斯",
+    "間歇訓練",
+  ];
 
   const handleAddTodo = async () => {
     if (task.trim()) {
@@ -233,12 +241,24 @@ function ToDoList() {
             /> */}
 
             {/* 地址輸入框 */}
-            <TextField
-              label="Enter Address"
+            <Autocomplete
+              freeSolo
+              options={[...markerLocations]} // 預設標記地點
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              fullWidth
-              variant="outlined"
+              onChange={(event, newValue) => {
+                setAddress(newValue);
+              }}
+              onInputChange={(event, newInputValue) => {
+                setAddress(newInputValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Enter Address"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
             />
 
             <DateTimePicker

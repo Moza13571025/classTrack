@@ -36,10 +36,12 @@ export const MarkerProvider = ({ children }) => {
     setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
   };
 
-
+  const getMarkerAddresses = () => {
+    return markers.map((marker) => marker.address);
+  };
 
   return (
-    <MarkerContext.Provider value={{ markers, addMarker }}>
+    <MarkerContext.Provider value={{ markers, addMarker, getMarkerAddresses }}>
       {children}
     </MarkerContext.Provider>
   );
