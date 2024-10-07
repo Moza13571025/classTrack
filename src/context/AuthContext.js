@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    localStorage.removeItem("user"); // 如果有儲存登入狀態，可在此移除
   };
 
   return (
