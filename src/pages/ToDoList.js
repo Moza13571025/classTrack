@@ -59,7 +59,7 @@ function ToDoList() {
     setEditIndex(null);
   };
   // 預設任務選項
-  const taskOptions = ["學習", "運動", "購物", "休息"];
+  const taskOptions = ["飛輪有氧", "拳擊有氧", "空中瑜珈", "皮拉提斯","間歇訓練"];
 
   const handleAddTodo = async () => {
     if (task.trim()) {

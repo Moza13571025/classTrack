@@ -145,7 +145,7 @@ const MapPage = () => {
           <Marker
             key={index}
             position={marker.position}
-            icon={marker.type === "gym" ? gymIcon : customUserIcon} // 根據類型設置圖標
+            icon={marker.type === "default" ? gymIcon : customUserIcon} // 根據類型設置圖標
           >
             <Popup>{marker.address}</Popup>
           </Marker>
