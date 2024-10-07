@@ -21,12 +21,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import MapIcon from "@mui/icons-material/Map";
 import { Link } from "react-router-dom"; // 導入 Link 組件
 //導入DateTimePicker
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+// import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import axios from "axios";
 import { MarkerContext } from "../context/MarkerContext";
+import CustomDateTimePicker from "../components/CustomDateTimePicker"; 
 
 // 引入 isSameOrAfter 插件；因為dayjs 目前不支援 isSameOrAfter 函數
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -152,7 +153,7 @@ function ToDoList() {
         </Button>
 
         {/* 日期選擇器 DateTimePicker */}
-        <DateTimePicker
+        <CustomDateTimePicker
           label="選擇要篩選的日期"
           value={selectedDate} // 用 selectedDate 儲存選擇的日期
           onChange={(newValue) => setSelectedDate(newValue)} // 只更新選擇的日期，不立即篩選
@@ -261,7 +262,7 @@ function ToDoList() {
               )}
             />
 
-            <DateTimePicker
+            <CustomDateTimePicker
               label="Due Date"
               value={date}
               onChange={(newValue) => setDate(newValue)}
