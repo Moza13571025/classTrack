@@ -35,6 +35,11 @@ const Sidebar = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleLogout = () => {
+    logout(); // 呼叫登出功能
+    navigate("/login"); // 導向登入頁面
+  };
+
   const drawer = (
     <div>
       <List>
@@ -65,11 +70,6 @@ const Sidebar = () => {
       </List>
     </div>
   );
-
-  const handleLogout = () => {
-    logout(); // 呼叫登出功能
-    navigate("/login"); // 導向登入頁面
-  };
 
   return (
     <>
