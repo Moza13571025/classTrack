@@ -1,6 +1,7 @@
 // src/components/Sidebar.js
-import React from "react";
+import React, { useContext } from "react";
 import {
+  Button,
   Drawer,
   List,
   ListItem,
@@ -15,9 +16,11 @@ import {
   List as ListIcon,
   Map as MapIcon,
   Menu as MenuIcon,
+  Logout as LogoutIcon, // 引入登出圖示
 } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const drawerWidth = 240;
 
@@ -25,6 +28,8 @@ const Sidebar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -51,9 +56,20 @@ const Sidebar = () => {
           </ListItemIcon>
           <ListItemText primary="地圖頁面" />
         </ListItem>
+        <ListItem button onClick={handleLogout}>
+          <ListItemIcon>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText primary="登出" />
+        </ListItem>
       </List>
     </div>
   );
+
+  const handleLogout = () => {
+    logout(); // 呼叫登出功能
+    navigate("/login"); // 導向登入頁面
+  };
 
   return (
     <>
