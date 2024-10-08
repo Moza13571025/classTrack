@@ -133,8 +133,8 @@ function ToDoList() {
   };
 
   const handleEditTodo = (index) => {
-    setTask(todos[index].task); // 只設置待辦事項的文本
-    setDate(dayjs(todos[index].date)); // 分別設置日期
+    setTask(todos[index].task);
+    setDate(dayjs(todos[index].date)); // 確保回傳是dayjs
     setAddress(todos[index].address);
     setEditIndex(index);
     handleOpenDialog(); // 編輯時打開彈跳視窗
