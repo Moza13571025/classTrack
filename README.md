@@ -1,70 +1,129 @@
-# Getting Started with Create React App
+# ClassTrack - Fitness Memo App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ClassTrack 是一個健身備忘錄應用程式，幫助用戶記錄健身房或健身中心的團體課程，不再錯過任何課程。應用提供了用戶與管理者的登入功能，並包含一個備忘錄（To-Do List）功能頁面，用於管理和追蹤課程紀錄。它的設計採用響應式布局，適應各種裝置，包括桌面和行動設備。
 
-## Available Scripts
+## 功能特點
 
-In the project directory, you can run:
+- **用戶管理：** 用戶可註冊並登入應用，並可以快速管理課程備忘錄。
+- **備忘錄功能：** 使用者可新增、刪除以及查看預定的健身團課。
+- **地圖功能：** 用戶可以瀏覽健身中心的地理位置。
+- **響應式設計：** 應用在桌面和手機版本上都有優化的顯示，提供一致的使用體驗。
+- **一鍵登錄：** 支持管理者一鍵快速登錄。
 
-### `npm start`
+## 頁面結構
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. **首頁：** 應用介紹、標題、登錄按鈕、註冊引導按鈕。
+2. **備忘錄頁面 (ToDoList)：** 記錄用戶的課程備忘，管理團課資訊。
+3. **地圖頁面：** 查看健身中心地點和位置。
+4. **登入頁面：** 用戶可以通過此頁面登入，已登入用戶會顯示登出按鈕。
+5. **註冊頁面：** 新用戶可以進行註冊，並登入應用程式。
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 安裝與啟動
 
-### `npm test`
+### 1. Clone 專案
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+git clone <https://github.com/yourusername/classtrack.git>
+cd classtrack
 
-### `npm run build`
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. 安裝相依套件
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+確保您已經安裝 [Node.js](https://nodejs.org/)，然後運行以下命令：
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm install
 
-### `npm run eject`
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 3. 啟動應用
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+運行應用程式：
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm start
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
 
-## Learn More
+應用程式會在 [http://localhost:3000](http://localhost:3000/) 開啟。
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 4. 編譯建構 (可選)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+要編譯為生產環境的版本：
 
-### Code Splitting
+```bash
+npm run build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
 
-### Analyzing the Bundle Size
+這將創建一個壓縮的、適合部署的 `build` 資料夾。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 主要技術堆疊
 
-### Making a Progressive Web App
+- **React.js:** 應用的主要前端框架。
+- **React Router:** 用於頁面間的導航。
+- **Material UI (MUI):** 用於應用程式的 UI 元件庫，提供視覺一致性和響應式設計。
+- **Context API:** 用於管理應用中的用戶狀態和認證信息。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 檔案結構
 
-### Advanced Configuration
+```bash
+src/
+├── components/
+│   ├── Header.js         # 應用的導航列
+│   ├── Sidebar.js        # 側邊欄（如果有）
+├── context/
+│   └── AuthContext.js    # 管理用戶認證狀態
+├── pages/
+│   ├── Home.js           # 首頁
+│   ├── ToDoList.js       # 備忘錄頁面
+│   ├── MapPage.js        # 地圖頁面
+│   ├── LoginPage.js      # 登錄頁面
+│   ├── RegisterPage.js   # 註冊頁面
+├── App.js                # 應用的主要路由
+└── index.js              # 應用的入口
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
 
-### Deployment
+## 認證機制
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+應用使用 `AuthContext` 提供者來處理用戶的登入狀態。當用戶登入時，其資訊會儲存在 `localStorage`，使得用戶刷新頁面後仍然保持登入狀態。
 
-### `npm run build` fails to minify
+```
+const login = (username) => {
+  setUser(username);
+  localStorage.setItem("user", username);
+};
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+
+登出則會清除 `localStorage` 中的用戶資訊，並將用戶狀態設為 `null`。
+
+```
+const logout = () => {
+  setUser(null);
+  localStorage.removeItem("user");
+};
+
+```
+
+## 改進與優化
+
+- **未來功能**：增加課程提醒功能，讓用戶在課程開始前收到提醒通知。
+- **UI 優化**：更進一步美化行動裝置版的 UI，提供更直覺的操作體驗。
+- **後端支援**：未來可以整合後端 API 來支持課程的同步與管理。
+
+## 貢獻指南
+
+歡迎任何形式的貢獻。如果您有任何問題或建議，請提交 [Issue](https://github.com/yourusername/classtrack/issues) 或發送 Pull Request。
+
+1. Fork 本專案
+2. 建立您的分支 (`git checkout -b feature/my-feature`)
+3. Commit 您的變更 (`git commit -am 'Add some feature'`)
+4. Push 到您的分支 (`git push origin feature/my-feature`)
+5. 提交 Pull Request
+
+## License
+
+這個專案使用 [MIT License](https://www.notion.so/LICENSE)。
