@@ -53,13 +53,13 @@ const Sidebar = () => {
           <ListItemIcon>
             <ListIcon />
           </ListItemIcon>
-          <ListItemText primary="To-Do List" />
+          <ListItemText primary="備忘錄" />
         </ListItem>
         <ListItem button component={Link} to="/map">
           <ListItemIcon>
             <MapIcon />
           </ListItemIcon>
-          <ListItemText primary="地圖頁面" />
+          <ListItemText primary="地圖" />
         </ListItem>
         <ListItem button onClick={handleLogout}>
           <ListItemIcon>

@@ -1,6 +1,6 @@
 // src/pages/Home.js
 import React, { useContext } from "react";
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"; // 導入 AuthContext
 import { useNavigate } from "react-router-dom";
@@ -15,33 +15,77 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <Typography variant="h4">首頁</Typography>
-      <Typography>歡迎來到首頁！</Typography>
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundImage: `url(/ClassTrack_kv.png)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        textAlign: "center",
+        padding: "20px",
+      }}
+    >
+      {/* Title */}
+      <Typography
+        variant="h3"
+        component="h1"
+        sx={{ fontWeight: "bold", mb: 2 }}
+      >
+        ClassTrack
+      </Typography>
 
-      {/* 新增登入和註冊按鈕 */}
+      {/* Subtitle */}
+      <Typography variant="h6" component="h2" sx={{ mb: 4 }}>
+        從此不再錯過任何一堂團課！
+      </Typography>
+
+      {/* Login Button */}
       <Button
         variant="contained"
         color="primary"
         component={Link}
         to="/login"
-        style={{ margin: "10px" }}
+        sx={{
+          backgroundColor: "#FF4081", // Bold contrasting color
+          mb: 2,
+          padding: "10px 30px",
+          fontSize: "18px",
+        }}
       >
         登入
       </Button>
+
+      {/* Register Button */}
       <Button
-        variant="outlined"
-        color="secondary"
         component={Link}
         to="/register"
-        style={{ margin: "10px" }}
+        sx={{
+          color: "#fff",
+          textDecoration: "underline",
+          mb: 2,
+          fontSize: "16px",
+        }}
       >
-        註冊
+        還不是會員？&gt;>前往註冊
       </Button>
-      <Button variant="contained" onClick={handleAdminLogin}>
+
+      {/* Admin Quick Login */}
+      <Button
+        variant="text"
+        onClick={handleAdminLogin}
+        sx={{
+          color: "#b0b0b0",
+          fontSize: "14px",
+          mt: 1,
+        }}
+      >
         管理者一鍵登入
       </Button>
-    </div>
+    </Box>
   );
 };
 

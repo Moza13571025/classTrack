@@ -192,7 +192,7 @@ function ToDoList() {
         {/* 篩選後的清單 */}
         <List>
           {filteredTodos.map((todos, index) => (
-            <ListItem key={todos.task + todos.date}>
+            <ListItem key={todos.task + todos.date}> {/* 使用唯一的 key */}
               <Checkbox
                 checked={todos.completed}
                 onChange={() => handleToggle(index)}
