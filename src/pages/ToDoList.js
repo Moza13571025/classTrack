@@ -25,6 +25,7 @@ import dayjs from "dayjs";
 import axios from "axios";
 import { MarkerContext } from "../context/MarkerContext";
 import CustomDateTimePicker from "../components/CustomDateTimePicker";
+import Layout from "../components/Layout"; 
 
 // 引入 isSameOrAfter 插件；因為dayjs 目前不支援 isSameOrAfter 函數
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -162,56 +163,58 @@ function ToDoList() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center", // Center horizontally
-          marginBottom: "16px",
-        }}
-      >
-        <CustomDateTimePicker
-          label="選擇要篩選的日期"
-          value={selectedDate} // 用 selectedDate 儲存選擇的日期
-          onChange={(newValue) => setSelectedDate(newValue)} // 只更新選擇的日期，不立即篩選
-          slots={{ textField: TextField }}
-        />
-        <Button
-          variant="contained"
-          style={{ marginLeft: "1rem" }}
-          onClick={handleFilterTodos}
+      <Layout mt={8}>
+        {/* 傳遞 mt 參數 */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center", // Center horizontally
+            marginBottom: "16px",
+          }}
         >
-          篩選
-        </Button>
-      </div>
+          <CustomDateTimePicker
+            label="選擇要篩選的日期"
+            value={selectedDate} // 用 selectedDate 儲存選擇的日期
+            onChange={(newValue) => setSelectedDate(newValue)} // 只更新選擇的日期，不立即篩選
+            slots={{ textField: TextField }}
+          />
+          <Button
+            variant="contained"
+            style={{ marginLeft: "1rem" }}
+            onClick={handleFilterTodos}
+          >
+            篩選
+          </Button>
+        </div>
 
-      {/* 顯示範例待辦事項，當沒有真實todos時 */}
-      {todos.length === 0 && (
+        {/* 顯示範例待辦事項，當沒有真實todos時 */}
+        {todos.length === 0 && (
+          <List>
+            <ListItem>
+              <Checkbox></Checkbox>
+              <ListItemText
+                primary="範例：拳擊有氧"
+                secondary="日期: 今天, 地點: 世界健身俱樂部 Focus店"
+                style={{ color: "gray" }}
+              />
+            </ListItem>
+          </List>
+        )}
+
+        {/* 篩選後的清單 */}
         <List>
-          <ListItem>
-            <Checkbox></Checkbox>
-            <ListItemText
-              primary="範例：拳擊有氧"
-              secondary="日期: 今天, 地點: 世界健身俱樂部 Focus店"
-              style={{ color: "gray" }}
-            />
-          </ListItem>
-        </List>
-      )}
-
-      {/* 篩選後的清單 */}
-      <List>
-        {filteredTodos.map((todos, index) => (
-          <ListItem key={todos.task + todos.date}>
-            {" "}
-            {/* 使用唯一的 key */}
-            <Checkbox
-              checked={todos.completed}
-              onChange={() => handleToggle(index)}
-            />
-            <ListItemText
-              primary={todos.task} // 顯示待辦事項（字串）
-              secondary={`日期:
+          {filteredTodos.map((todos, index) => (
+            <ListItem key={todos.task + todos.date}>
+              {" "}
+              {/* 使用唯一的 key */}
+              <Checkbox
+                checked={todos.completed}
+                onChange={() => handleToggle(index)}
+              />
+              <ListItemText
+                primary={todos.task} // 顯示待辦事項（字串）
+                secondary={`日期:
                   ${
                     todos.date
                       ? dayjs(todos.date).format("YYYY-MM-DD")
@@ -219,117 +222,118 @@ function ToDoList() {
                   },
                     地點: ${todos.address}
                 `} //顯示日期，設定3元條件式防止 todo.date 為 undefined 時導致的 TypeError 錯誤。
-              style={{
-                textDecoration: todos.completed ? "line-through" : "none",
-                color: todos.completed ? "gray" : "black",
-              }}
-            />
-            <IconButton onClick={() => handleEditTodo(index)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => handleDeleteTodo(index)}>
-              <DeleteIcon />
-            </IconButton>
-            {/* 地圖圖示按鈕 */}
-            <Link to={`/map`}>
-              <IconButton>
-                <MapIcon />
+                style={{
+                  textDecoration: todos.completed ? "line-through" : "none",
+                  color: todos.completed ? "gray" : "black",
+                }}
+              />
+              <IconButton onClick={() => handleEditTodo(index)}>
+                <EditIcon />
               </IconButton>
-            </Link>
-          </ListItem>
-        ))}
-      </List>
+              <IconButton onClick={() => handleDeleteTodo(index)}>
+                <DeleteIcon />
+              </IconButton>
+              {/* 地圖圖示按鈕 */}
+              <Link to={`/map`}>
+                <IconButton>
+                  <MapIcon />
+                </IconButton>
+              </Link>
+            </ListItem>
+          ))}
+        </List>
 
-      {/* 新增待辦事項浮動按鈕 */}
-      <Fab
-        color="primary"
-        aria-label="add"
-        style={{
-          position: "fixed",
-          bottom: "5dvh",
-          right: "45dvw",
-        }}
-        onClick={handleOpenDialog}
-      >
-        <AddIcon />
-      </Fab>
-      {/* 新增待辦事項按鈕，點擊打開彈跳視窗
+        {/* 新增待辦事項浮動按鈕 */}
+        <Fab
+          color="primary"
+          aria-label="add"
+          style={{
+            position: "fixed",
+            bottom: "5dvh",
+            right: "45dvw",
+          }}
+          onClick={handleOpenDialog}
+        >
+          <AddIcon />
+        </Fab>
+        {/* 新增待辦事項按鈕，點擊打開彈跳視窗
         <Button variant="contained" onClick={handleOpenDialog}>
           Add Todo
         </Button> */}
 
-      {/* 新增/編輯待辦事項彈跳視窗 */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {editIndex !== null ? "編輯待辦事項" : "新增待辦事項"}
-        </DialogTitle>
-        <DialogContent>
-          {/* 使用 Autocomplete 來支持下拉選單與自定義輸入 */}
-          <Autocomplete
-            freeSolo // 支持用戶自行輸入
-            options={taskOptions} // 預設選項
-            value={task}
-            onChange={(event, newValue) => {
-              setTask(newValue);
-            }}
-            onInputChange={(event, newInputValue) => {
-              setTask(newInputValue); // 更新用戶輸入值
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Task"
-                variant="outlined"
-                fullWidth
-              />
-            )}
-          />
-          {/* 地址輸入框 */}
-          <Autocomplete
-            freeSolo
-            options={[...markerLocations]} // 預設標記地點
-            value={address}
-            onChange={(event, newValue) => {
-              setAddress(newValue);
-            }}
-            onInputChange={(event, newInputValue) => {
-              setAddress(newInputValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Enter Address"
-                variant="outlined"
-                fullWidth
-              />
-            )}
-          />
+        {/* 新增/編輯待辦事項彈跳視窗 */}
+        <Dialog open={openDialog} onClose={handleCloseDialog}>
+          <DialogTitle>
+            {editIndex !== null ? "編輯待辦事項" : "新增待辦事項"}
+          </DialogTitle>
+          <DialogContent>
+            {/* 使用 Autocomplete 來支持下拉選單與自定義輸入 */}
+            <Autocomplete
+              freeSolo // 支持用戶自行輸入
+              options={taskOptions} // 預設選項
+              value={task}
+              onChange={(event, newValue) => {
+                setTask(newValue);
+              }}
+              onInputChange={(event, newInputValue) => {
+                setTask(newInputValue); // 更新用戶輸入值
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Task"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+            />
+            {/* 地址輸入框 */}
+            <Autocomplete
+              freeSolo
+              options={[...markerLocations]} // 預設標記地點
+              value={address}
+              onChange={(event, newValue) => {
+                setAddress(newValue);
+              }}
+              onInputChange={(event, newInputValue) => {
+                setAddress(newInputValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Enter Address"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+            />
 
-          <CustomDateTimePicker
-            label="Due Date"
-            value={date}
-            onChange={(newValue) => setDate(newValue)}
-            fullWidth
-            slots={{ textField: TextField }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>取消</Button>
-          <Button onClick={handleAddTodo}>
-            {editIndex !== null ? "Update" : "Add"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <CustomDateTimePicker
+              label="Due Date"
+              value={date}
+              onChange={(newValue) => setDate(newValue)}
+              fullWidth
+              slots={{ textField: TextField }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>取消</Button>
+            <Button onClick={handleAddTodo}>
+              {editIndex !== null ? "Update" : "Add"}
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-      {/* 刪除確認彈跳視窗 */}
-      <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>確認刪除</DialogTitle>
-        <DialogContent>確定要刪除此待辦事項嗎？</DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog}>取消</Button>
-          <Button onClick={handleDeleteTodo}>刪除</Button>
-        </DialogActions>
-      </Dialog>
+        {/* 刪除確認彈跳視窗 */}
+        <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
+          <DialogTitle>確認刪除</DialogTitle>
+          <DialogContent>確定要刪除此待辦事項嗎？</DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDeleteDialog}>取消</Button>
+            <Button onClick={handleDeleteTodo}>刪除</Button>
+          </DialogActions>
+        </Dialog>
+      </Layout>
     </LocalizationProvider>
   );
 }

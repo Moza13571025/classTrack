@@ -1,7 +1,6 @@
 // src/components/Sidebar.js
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
-  Button,
   Drawer,
   List,
   ListItem,
@@ -16,10 +15,9 @@ import {
   List as ListIcon,
   Map as MapIcon,
   Menu as MenuIcon,
-  Logout as LogoutIcon, // 引入登出圖示
+  Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const drawerWidth = 240;
@@ -92,19 +90,14 @@ const Sidebar = () => {
       )}
       <Drawer
         variant={isMobile ? "temporary" : "permanent"}
-        anchor="right" //抽屜改從右邊顯示
+        anchor="right"
         open={isMobile ? mobileOpen : true}
         onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true, // 更好的性能
-        }}
+        ModalProps={{ keepMounted: true }}
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
         }}
       >
         {drawer}
