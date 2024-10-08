@@ -134,7 +134,7 @@ function ToDoList() {
 
   const handleEditTodo = (index) => {
     setTask(todos[index].task); // 只設置待辦事項的文本
-    setDate(todos[index].date); // 分別設置日期
+    setDate(dayjs(todos[index].date)); // 分別設置日期
     setAddress(todos[index].address);
     setEditIndex(index);
     handleOpenDialog(); // 編輯時打開彈跳視窗
@@ -199,13 +199,13 @@ function ToDoList() {
               />
               <ListItemText
                 primary={todos.task} // 顯示待辦事項（字串）
-                secondary={`Due:
+                secondary={`日期:
                   ${
                     todos.date
                       ? dayjs(todos.date).format("YYYY-MM-DD")
                       : "No date available"
                   },
-                    address: ${todos.address}
+                    地點: ${todos.address}
                 `} //顯示日期，設定3元條件式防止 todo.date 為 undefined 時導致的 TypeError 錯誤。
                 style={{
                   textDecoration: todos.completed ? "line-through" : "none",
