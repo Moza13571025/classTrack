@@ -1,7 +1,8 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import {
   TextField,
   Button,
+  Checkbox,
   List,
   ListItem,
   ListItemText,
@@ -10,10 +11,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Autocomplete,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -41,6 +38,7 @@ function ToDoList() {
   });
   const [task, setTask] = useState(""); // 設定 task 為下拉選單的選擇
   const [date, setDate] = useState(dayjs());
+
   const [editIndex, setEditIndex] = useState(null);
   const [dateFilter, setDateFilter] = useState(dayjs()); //透過dayjs()初始化dateFilter為當前日期；動態更新dateFilter
   const [selectedDate, setSelectedDate] = useState(dayjs()); // 用來存儲臨時選擇的日期
@@ -54,20 +52,6 @@ function ToDoList() {
   const { markers, getMarkerAddresses } = useContext(MarkerContext);
   const markerLocations = getMarkerAddresses(); //獲取標記地址
   const [errorMessage, setErrorMessage] = useState(null);
-
-// useEffect(() => {
-//   const storedTodos = localStorage.getItem("todos");
-//    console.log("載入的 todos:", storedTodos);
-//   if (storedTodos) {
-//     setTodos(JSON.parse(storedTodos));
-//   }
-// }, []);
-
-// 當 todos 更新時，將其存儲到 Local Storage
-// useEffect(() => {
-//   console.log("todos 狀態變化:", todos);
-//   localStorage.setItem("todos", JSON.stringify(todos));
-// }, [todos]);
 
   const handleOpenDeleteDialog = (index) => {
     setTask("");
@@ -88,9 +72,18 @@ function ToDoList() {
     "間歇訓練",
   ];
 
+  // 切換任務狀態的函數
+  const handleToggle = (index) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].completed = !updatedTodos[index].completed;
+    const sortedTodos = updatedTodos.sort((a, b) => a.completed - b.completed);
+    setTodos(sortedTodos);
+    localStorage.setItem("todos", JSON.stringify(sortedTodos));
+  };
+
   const handleAddTodo = async () => {
     if (task.trim()) {
-      const newTodo = { task, date, address }; // 將新待辦事項設置為對象
+      const newTodo = { task, date, address, completed: false }; 
 
       if (editIndex !== null) {
         // 編輯待辦事項
@@ -200,6 +193,10 @@ function ToDoList() {
         <List>
           {filteredTodos.map((todos, index) => (
             <ListItem key={index}>
+              <Checkbox
+                checked={todos.completed}
+                onChange={() => handleToggle(index)}
+              />
               <ListItemText
                 primary={todos.task} // 顯示待辦事項（字串）
                 secondary={`Due:
@@ -210,6 +207,10 @@ function ToDoList() {
                   },
                     address: ${todos.address}
                 `} //顯示日期，設定3元條件式防止 todo.date 為 undefined 時導致的 TypeError 錯誤。
+                style={{
+                  textDecoration: todos.completed ? "line-through" : "none",
+                  color: todos.completed ? "gray" : "black",
+                }}
               />
               <IconButton onClick={() => handleEditTodo(index)}>
                 <EditIcon />
