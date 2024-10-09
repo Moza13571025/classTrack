@@ -1,6 +1,6 @@
 // src/pages/Home.js
 import React, { useContext } from "react";
-import { Typography, Button, Box, AppBar, Toolbar } from "@mui/material";
+import { Typography, Button, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"; // 導入 AuthContext
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ const Home = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          backgroundImage: `url(/background.png)`,
+          backgroundImage: `url(/backgroundImage.png})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           textAlign: "center",

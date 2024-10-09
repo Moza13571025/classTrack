@@ -37,7 +37,7 @@ const Header = () => {
         <Typography
           variant="h6"
           component={Link}
-          to="/"
+          to="/classTrack"
           sx={{
             textDecoration: "none",
             color: "white",
@@ -52,7 +52,7 @@ const Header = () => {
         {/* Show desktop nav links */}
         {!isMobile && (
           <Box sx={{ marginRight: "1.5rem" }}>
-            <Button color="inherit" component={Link} to="/">
+            <Button color="inherit" component={Link} to="/classTrack">
               首頁
             </Button>
             <Button color="inherit" component={Link} to="/todo">

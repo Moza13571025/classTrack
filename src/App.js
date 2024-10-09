@@ -14,7 +14,7 @@ const App = () => (
   <AuthProvider>
     <Router>
       <nav>
-        <Link to="/">Home</Link>
+        <Link to="/classTrack">Home</Link>
         <Link to="/todo">To-Do List</Link>
         <Link to="/map">Map</Link>
         <Link to="/login">login</Link>
@@ -22,7 +22,7 @@ const App = () => (
       </nav>
       <Layout>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/classTrack" element={<Home />} />
 
           {/* 受保護的路由：用戶登入後才能訪問 ToDoList 和 MapPage */}
           <Route
