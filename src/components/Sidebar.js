@@ -41,7 +41,7 @@ const Sidebar = () => {
   const drawer = (
     <div>
       <List>
-        <ListItem button component={Link} to="/">
+        <ListItem button component={Link} to="/classTrack">
           <ListItemIcon>
             <Home />
           </ListItemIcon>
