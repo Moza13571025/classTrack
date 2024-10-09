@@ -26,7 +26,7 @@ const Home = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          backgroundImage: `url(/ClassTrack.png)`,
+          backgroundImage: `url(/background.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           textAlign: "center",
