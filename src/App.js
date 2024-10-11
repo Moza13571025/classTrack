@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Layout from "./components/Layout";
@@ -13,13 +12,6 @@ import { AuthProvider } from "./context/AuthContext";
 const App = () => (
   <AuthProvider>
     <Router>
-      <nav>
-        <Link to="/classTrack">Home</Link>
-        <Link to="/todo">To-Do List</Link>
-        <Link to="/map">Map</Link>
-        <Link to="/login">login</Link>
-        <Link to="/register">register</Link>
-      </nav>
       <Layout>
         <Routes>
           <Route path="/classTrack" element={<Home />} />
