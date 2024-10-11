@@ -15,7 +15,6 @@ const App = () => (
       <Layout>
         <Routes>
           <Route path="/classTrack" element={<Home />} />
-
           {/* 受保護的路由：用戶登入後才能訪問 ToDoList 和 MapPage */}
           <Route
             path="/todo"

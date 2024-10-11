@@ -19,7 +19,7 @@ const Home = () => {
     <Layout>
       <Box
         sx={{
-          width: "100dvw",
+          // width: "100dvw",
           overflowX: "hidden", // Prevent horizontal scrolling
           height: "100dvh",
           display: "flex",
